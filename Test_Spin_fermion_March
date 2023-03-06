@@ -235,7 +235,7 @@ def load(H_SF, currentmatrix, Beta):
                 
 def getEnergy(H_SF, Beta):
     e,v = np.linalg.eigh(H_SF.toarray()) 
-    return np.sum(np.multiply((1/(np.exp(e*Beta)+1)),e))  
+    return np.sum(np.multiply((1/(np.exp((e-ChemPotential)*Beta)+1)),e))  
        
 def getNumber(H_SF, Beta):
     e,v = np.linalg.eigh(H_SF.toarray())
