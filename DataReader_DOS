@@ -1,0 +1,88 @@
+import numpy as np
+import os
+import shutil
+import matplotlib.pyplot as plt
+
+def getFermiDirac(e, mu, Beta):
+    
+    return 1/((np.exp((e-mu)*Beta )+1))
+
+def getParticles(Hist, energy, index, Beta):
+    particles = 0
+    mu = energy[index]
+    for i in range(index):
+        Freq = Hist[i]
+        particles += Freq*getFermiDirac(energy[i],mu, Beta)
+        
+    particles /= 10000
+        
+    return particles
+        
+
+
+os.chdir('C:\\Users\\15083\\Documents\\NEU_semester_2\\Feiguin_Group_Research_Spring_2022\\Code\\6x6_temp0-0.005_neg5Dope_Dope1')
+
+filenames =  os.listdir('C:\\Users\\15083\\Documents\\NEU_semester_2\\Feiguin_Group_Research_Spring_2022\\Code\\6x6_temp0-0.005_neg5Dope_Dope1')
+'''
+def read_col(fname, col=0, convert=float, sep=None):
+
+    with open(fname) as fobj:
+         return [convert(line.split(sep=sep)[col]) for line in fobj]
+
+def read_col2(fname, col=1, convert=float, sep=None):
+
+    with open(fname) as fobj:
+         return [convert(line.split(sep=sep)[col]) for line in fobj]
+   
+def read_col3(fname, col=2, convert=float, sep=None):
+
+    with open(fname) as fobj:
+         return [convert(line.split(sep=sep)[col]) for line in fobj]
+
+
+def read_col4(fname, col=3, convert=float, sep=None):
+
+    with open(fname) as fobj:
+         return [convert(line.split(sep=sep)[col]) for line in fobj]
+
+'''
+
+filenameslen = len(filenames)
+
+
+fig, ax = plt.subplots()
+ax.set_ylabel("Frequency")
+ax.set_xlabel("Energy/EnergyMax")
+i = 1 #for i in range(0,39,1):    
+
+      
+Data = np.genfromtxt(filenames[i])
+currentname = filenames[i]
+currentnameparts = currentname.split('_')
+Temp = currentnameparts[2]
+Temp = float(Temp)
+Beta = 1/Temp
+ 
+res = Data
+EnergyEigs = np.array(res)
+fig, ax = plt.subplots()
+ax.set_ylabel("Frequency")
+ax.set_xlabel("Energy")
+
+ax.set_ylabel("Number particles")
+ax.set_xlabel("mu")
+xDOS, yDOS = np.histogram(EnergyEigs, bins = 2000)
+xDOS = np.asarray(xDOS, dtype = np.float64)
+yDOS = yDOS[0:2000]
+
+particles = []
+#xDOS = np.asarray(xDOS)
+
+for i in range(2000):
+    particles.append(getParticles(xDOS, yDOS, i, Beta))
+
+#plt.plot(yDOS, xDOS)
+plt.plot(yDOS,particles)
+plt.title("T = " + str(Temp))
+#ax.legend("T = " + str(Temp))
+
